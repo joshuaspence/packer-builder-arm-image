@@ -28,7 +28,7 @@ type Communicator struct {
 
 func (c *Communicator) Start(ctx context.Context, cmd *packer.RemoteCmd) error {
 	command, err := c.CmdWrapper(
-		fmt.Sprintf("chroot %s /bin/sh -c \"%s\"", c.Chroot, cmd.Command))
+		fmt.Sprintf("SYSTEMD_NSPAWN_TMPFS_TMP=0 systemd-nspawn --directory %s /bin/sh -c \"%s\"", c.Chroot, cmd.Command))
 	if err != nil {
 		return err
 	}
