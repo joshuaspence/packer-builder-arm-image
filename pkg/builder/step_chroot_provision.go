@@ -6,8 +6,6 @@ import (
 	"context"
 	"log"
 
-	packer_common "github.com/hashicorp/packer/common"
-	"github.com/hashicorp/packer/common/chroot"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
 )
@@ -21,10 +19,10 @@ func (s *StepChrootProvision) Run(ctx context.Context, state multistep.StateBag)
 	hook := state.Get("hook").(packer.Hook)
 	mountPath := state.Get(s.ChrootKey).(string)
 	ui := state.Get("ui").(packer.Ui)
-	wrappedCommand := state.Get("wrappedCommand").(packer_common.CommandWrapper)
+	wrappedCommand := state.Get("wrappedCommand").(CommandWrapper)
 
 	// Create our communicator
-	comm := &chroot.Communicator{
+	comm := &Communicator{
 		Chroot:     mountPath,
 		CmdWrapper: wrappedCommand,
 	}

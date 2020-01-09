@@ -221,7 +221,7 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 	state.Put("debug", b.config.PackerDebug)
 	state.Put("hook", hook)
 	state.Put("ui", ui)
-	state.Put("wrappedCommand", packer_common.CommandWrapper(wrappedCommand))
+	state.Put("wrappedCommand", CommandWrapper(wrappedCommand))
 
 	steps := []multistep.Step{
 		&packer_common.StepDownload{
