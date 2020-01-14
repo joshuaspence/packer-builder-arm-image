@@ -44,7 +44,7 @@ func (s *stepResizeFs) Run(ctx context.Context, state multistep.StateBag) multis
 }
 
 func (s *stepResizeFs) e2fsck(ctx context.Context, wrappedCommand packer_common.CommandWrapper, dev string) error {
-	e2fsckCommand, err := wrappedCommand(fmt.Sprintf("e2fsck -y -f %s", dev))
+	e2fsckCommand, err := wrappedCommand(fmt.Sprintf("sudo e2fsck -y -f %s", dev))
 	if err != nil {
 		return err
 	}
@@ -61,8 +61,7 @@ func (s *stepResizeFs) e2fsck(ctx context.Context, wrappedCommand packer_common.
 }
 
 func (s *stepResizeFs) resize(ctx context.Context, wrappedCommand packer_common.CommandWrapper, dev string) error {
-
-	reizeCommand, err := wrappedCommand(fmt.Sprintf("resize2fs %s", dev))
+	reizeCommand, err := wrappedCommand(fmt.Sprintf("sudo resize2fs %s", dev))
 	if err != nil {
 		return err
 	}

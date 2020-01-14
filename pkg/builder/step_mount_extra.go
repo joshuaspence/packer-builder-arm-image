@@ -48,7 +48,7 @@ func (s *StepMountExtra) Run(ctx context.Context, state multistep.StateBag) mult
 
 		ui.Message(fmt.Sprintf("Mounting: %s", mountInfo[2]))
 		if run(ctx, state, fmt.Sprintf(
-			"mount %s %s %s",
+			"sudo mount %s %s %s",
 			flags,
 			mountInfo[1],
 			innerPath)) != nil {
@@ -79,7 +79,7 @@ func (s *StepMountExtra) CleanupFunc(state multistep.StateBag) error {
 	mountPath := state.Get(s.ChrootKey).(string)
 	ui := state.Get("ui").(packer.Ui)
 	ui.Say("fuser -k " + mountPath)
-	run(context.TODO(), state, "fuser -k "+mountPath+" || exit 0")
+	run(context.TODO(), state, "sudo fuser -k "+mountPath+" || exit 0")
 
 	wrappedCommand := state.Get("wrappedCommand").(packer_common.CommandWrapper)
 	for len(s.mounts) > 0 {
@@ -110,7 +110,7 @@ func (s *StepMountExtra) CleanupFunc(state multistep.StateBag) error {
 			}
 		}
 
-		unmountCommand, err := wrappedCommand(fmt.Sprintf("umount %s", path))
+		unmountCommand, err := wrappedCommand(fmt.Sprintf("sudo umount %s", path))
 		if err != nil {
 			return fmt.Errorf("Error creating unmount command: %s", err)
 		}

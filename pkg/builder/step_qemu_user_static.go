@@ -69,7 +69,7 @@ func (s *stepQemuUserStatic) Run(ctx context.Context, state multistep.StateBag) 
 	s.qemuDestinationInChroot = filepath.Join(chrootDir, s.Args.PathToQemuInChroot)
 	state.Put(s.PathToQemuInChrootKey, s.Args.PathToQemuInChroot)
 
-	err := run(ctx, state, fmt.Sprintf("cp %s %s", qemuInHostPath, s.qemuDestinationInChroot))
+	err := run(ctx, state, fmt.Sprintf("sudo cp %s %s", qemuInHostPath, s.qemuDestinationInChroot))
 	if err != nil {
 		return multistep.ActionHalt
 	}
@@ -109,7 +109,7 @@ func (s *stepQemuUserStatic) makeWrapper(ctx context.Context, ui packer.Ui, stat
 	destWrapper := s.qemuDestinationInChroot
 	s.qemuDestinationInChroot += wrapped
 
-	err = run(ctx, state, fmt.Sprintf("mv %s %s", destWrapper, s.qemuDestinationInChroot))
+	err = run(ctx, state, fmt.Sprintf("sudo mv %s %s", destWrapper, s.qemuDestinationInChroot))
 	if err != nil {
 		s.qemuDestinationInChroot = destWrapper
 		return err

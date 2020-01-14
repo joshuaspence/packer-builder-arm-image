@@ -68,7 +68,7 @@ func (s *stepMountImage) Run(ctx context.Context, state multistep.StateBag) mult
 		ui.Message(fmt.Sprintf("Mounting: %s", mntAndPart.part))
 
 		err := run(ctx, state, fmt.Sprintf(
-			"mount %s %s",
+			"sudo mount %s %s",
 			mntAndPart.part, mntpnt))
 		if err != nil {
 			return multistep.ActionHalt
@@ -86,7 +86,7 @@ func (s *stepMountImage) Cleanup(state multistep.StateBag) {
 
 	if s.MountPath != "" {
 		for _, mntpnt := range reverse(s.mountpoints) {
-			run(context.TODO(), state, "umount "+mntpnt)
+			run(context.TODO(), state, "sudo umount "+mntpnt)
 		}
 		s.mountpoints = nil
 		// DO NOT do remove all here! if dev fails to umount it would be undesirable.

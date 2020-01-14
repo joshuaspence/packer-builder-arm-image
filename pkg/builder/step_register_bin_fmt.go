@@ -23,16 +23,17 @@ func (s *stepRegisterBinFmt) Run(_ context.Context, state multistep.StateBag) mu
 	registerstring_prefix := []byte{':', 'p', 'a', 'c', 'k', 'e', 'r', '-', 'b', 'u', 'i', 'l', 'd', 'e', 'r', '-', 'a', 'r', 'm', '-', 'i', 'm', 'a', 'g', 'e', ':', 'M', ':', ':', '\\', 'x', '7', 'f', 'E', 'L', 'F', '\\', 'x', '0', '1', '\\', 'x', '0', '1', '\\', 'x', '0', '1', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '0', '\\', 'x', '0', '2', '\\', 'x', '0', '0', '(', '\\', 'x', '0', '0', ':', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', '0', '0', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'e', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', '\\', 'x', 'f', 'f', ':'}
 	registerstring := append(registerstring_prefix, ([]byte(qemu))...)
 	registerstring = append(registerstring, ':')
+
 	f, err := os.OpenFile("/proc/sys/fs/binfmt_misc/register", os.O_RDWR, 0)
 	if err != nil {
 		ui.Error(err.Error())
-		return multistep.ActionHalt
+		//return multistep.ActionHalt
 	}
 	defer f.Close()
 	_, err = f.Write(registerstring)
 	if err != nil {
 		ui.Error(err.Error())
-		return multistep.ActionHalt
+		//return multistep.ActionHalt
 	}
 	return multistep.ActionContinue
 }

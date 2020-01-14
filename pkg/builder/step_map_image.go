@@ -21,19 +21,12 @@ func (s *stepMapImage) Run(_ context.Context, state multistep.StateBag) multiste
 	ui := state.Get("ui").(packer.Ui)
 
 	ui.Message(fmt.Sprintf("mapping %s", image))
-	// if run(state, fmt.Sprintf(
-	//	"kpartx -s -a %s",
-	//	image)) != nil {
-	//	return multistep.ActionHalt
-	//}
 
-	out, err := exec.Command("kpartx", "-s", "-a", "-v", image).CombinedOutput()
+	out, err := exec.Command("sudo", "kpartx", "-s", "-a", "-v", image).CombinedOutput()
 	ui.Say(fmt.Sprintf("kpartx -s -a -v %s", image))
 
-	// out, err := exec.Command("kpartx", "-l", image).CombinedOutput()
-	// ui.Say(fmt.Sprintf("kpartx -l: %s", string(out)))
 	if err != nil {
-		ui.Error(fmt.Sprintf("error kaprts -l %v: %s", err, string(out)))
+		ui.Error(fmt.Sprintf("error kpartx -s -a -v %v: %s", err, string(out)))
 		s.Cleanup(state)
 		return multistep.ActionHalt
 	}
@@ -74,5 +67,5 @@ func (s *stepMapImage) Run(_ context.Context, state multistep.StateBag) multiste
 
 func (s *stepMapImage) Cleanup(state multistep.StateBag) {
 	image := state.Get(s.ImageKey).(string)
-	run(context.TODO(), state, fmt.Sprintf("kpartx -d %s", image))
+	run(context.TODO(), state, fmt.Sprintf("sudo kpartx -d %s", image))
 }
