@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 
 	packer_common "github.com/hashicorp/packer/common"
@@ -34,7 +35,7 @@ func (s *StepMountExtra) Run(ctx context.Context, state multistep.StateBag) mult
 	for _, mountInfo := range config.ChrootMounts {
 		innerPath := mountPath + mountInfo[2]
 
-		if _, err := os.Stat(innerPath); os.IsNotExist(err) {
+		if _, err := os.Lstat(innerPath); os.IsNotExist(err) {
 			if err := os.MkdirAll(innerPath, 0755); err != nil {
 				err := fmt.Errorf("Error creating mount directory: %s", err)
 				state.Put("error", err)
@@ -48,11 +49,19 @@ func (s *StepMountExtra) Run(ctx context.Context, state multistep.StateBag) mult
 			flags = "--bind"
 		}
 
+		outerPath, err := filepath.EvalSymlinks(mountInfo[1])
+		if err != nil {
+				err := fmt.Errorf("Error resolving path: %s", err)
+				state.Put("error", err)
+				ui.Error(err.Error())
+				return multistep.ActionHalt
+    }
+
 		ui.Message(fmt.Sprintf("Mounting: %s", mountInfo[2]))
 		if run(ctx, state, fmt.Sprintf(
 			"mount %s %s %s",
 			flags,
-			mountInfo[1],
+			outerPath,
 			innerPath)) != nil {
 			return multistep.ActionHalt
 		}
